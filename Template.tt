@@ -1,0 +1,136 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ include file="DBHelper.ttinclude" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ assembly name="System.Data.dll" #>
+<#@ assembly name="System.Data.DataSetExtensions.dll" #>
+<#@ assembly name="System.Xml.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+using Dapper;
+using System.Data;
+using Devin.Framework;
+namespace Devin.Models
+{   	
+	/// <summary>
+	/// <#= T.TableCommit #>
+	/// </summary>
+    public partial class <#= T.ClassName+"Model" #> : ModelClass<<#= T.Config.TableName+"Model" #>>
+    {
+        ///<summary>字段枚举</summary>	
+		public enum E<#= T.ClassName #> 
+		{ <#foreach(DbColumn column in T.DbColumnList){ #>	
+			///<summary><#= column.Remark #></summary>
+			<#= column.ColumnName #>,<#}#>
+
+		}
+
+        ///<summary>字段列表</summary>	
+        public static string[] ps = { <#= string.Join(", ", T.DbColumnList.Select(p => "\"" + p.ColumnName + "\"").ToArray()) #> };
+        
+		///<summary>对应数据库的表名</summary>	
+        public static string tablename = "<#= T.Config.TableName #>";
+
+		#region 字段成员
+
+		<#    foreach(DbColumn column in T.DbColumnList)
+    { 
+		#>///<summary><#= column.Remark #></summary>		
+		public <#= column.CSharpType #><# if(column.CommonType.IsValueType && column.IsNullable){ #>?<# } #> <#= column.ColumnName #> { get; set; }
+		<#
+    } 
+		#>
+
+		#endregion
+
+		/// <summary>
+        /// 构造函数
+        /// </summary>
+        public <#= T.Config.TableName #>Model()
+        {
+            base.TableName = tablename;
+            base.Ps = ps;
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+using Dapper;
+using System.Data;
+using Devin.Framework;
+namespace Devin.Models
+{
+    /// <summary>
+    /// <#= T.TableCommit #>
+    /// </summary>
+    public partial class <#= T.ClassName+"Model" #> : ModelClass<<#= T.Config.TableName+"Model" #>>
+    {
+		#region 查
+
+		#endregion
+
+		#region 增
+
+		#endregion
+
+		#region 删
+
+		#endregion
+
+		#region 改
+
+		#endregion
+
+		#region 扩展属性
+
+		#endregion
+    }
+}
+
+
+<#+
+	public class TConfig : BaseConfig
+    {
+		//连接字符串
+        public override string ConnectionString
+        {
+            get
+            {
+                return @"server=.;uid=sa;pwd=95938;database=shenjinlong";                
+            }
+        }
+		//数据库名称
+        public override string DbDataBase
+        {
+            get { return "shenjinlong"; }
+        }
+		//表名称
+        public override string TableName
+        {
+            get { return "SearchKey"; }
+        }
+		//过滤字段
+        public override string[] NoExistFields
+        {
+            get { return new string[] { }; }
+        }
+    }
+	public DbHelper T = new DbHelper(new TConfig());
+#>
+
+
